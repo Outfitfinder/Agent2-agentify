@@ -114,7 +114,7 @@ def get_supabase(url: str, service_key: str) -> Client:
 
 def fetch_agent_config(sb: Client, agent_id: str = AGENT_ID) -> dict:
     """Récupère la config de l'agent depuis la table agents."""
-    resp = sb.table("agents").select("*").eq("id", agent_id).single().execute()
+    resp = sb.table("agents").select("*").eq("id", agent_id).maybe_single().execute()
     if not resp.data:
         raise ValueError(f"Agent '{agent_id}' introuvable dans la table agents.")
     return resp.data
@@ -126,7 +126,7 @@ def fetch_workspace(sb: Client, workspace_id: str) -> dict:
         sb.table("workspaces")
         .select("id,credits_remaining,subscription_status,plan")
         .eq("id", workspace_id)
-        .single()
+        .maybe_single()
         .execute()
     )
     if not resp.data:
@@ -145,7 +145,7 @@ def fetch_company(sb: Client, company_id: str) -> dict:
         sb.table("companies")
         .select("company_id,name,support_email,knowledge_base,workspace_id")
         .eq("company_id", company_id)
-        .single()
+        .maybe_single()
         .execute()
     )
     if not resp.data:
