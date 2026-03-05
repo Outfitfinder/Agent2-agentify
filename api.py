@@ -150,6 +150,8 @@ async def run_concierge(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
     except Exception as exc:
+        import traceback
+        logger.error("❌ ERREUR COMPLÈTE:\n%s", traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"Erreur interne : {exc}")
 
 
