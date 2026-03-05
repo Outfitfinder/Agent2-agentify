@@ -155,16 +155,20 @@ def fetch_company(sb: Client, company_id: str) -> dict:
 
 def fetch_agent_settings(sb: Client, workspace_id: str, agent_id: str = AGENT_ID) -> dict:
     """Récupère les réglages spécifiques workspace/agent (tone, rules…)."""
-    resp = (
-        sb.table("agent_settings")
-        .select("*")
-        .eq("workspace_id", workspace_id)
-        .eq("agent_id", agent_id)
-        .maybe_single()
-        .execute()
-    )
-    return resp.data or {"tone": "vous", "rules": {}}
-
+    try:
+        resp = (
+            sb.table("agent_settings")
+            .select("*")
+            .eq("workspace_id", workspace_id)
+            .eq("agent_id", agent_id)
+            .limit(1)
+            .execute()
+        )
+        if resp.data and len(resp.data) > 0:
+            return resp.data[0]
+    except Exception:
+        pass
+    return {"tone": "vous", "rules": {}}
 
 def insert_credit_usage(
     sb: Client,
