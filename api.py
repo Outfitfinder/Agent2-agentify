@@ -27,7 +27,12 @@ from pydantic import BaseModel, Field
 
 import concierge_agent as agent
 from email_worker import extract_preferences_from_body
+import logging
+import os
+from typing import Any
 
+logger = logging.getLogger("concierge_api")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(name)s | %(message)s")
 load_dotenv()
 
 SUPABASE_URL = os.environ["SUPABASE_URL"]
